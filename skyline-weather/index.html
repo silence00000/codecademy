@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Skyline Weather</title>
+  <meta name="description" content="Current conditions, hourly and 7-day forecasts for any city.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-sky="clear-day">
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="./" aria-label="Skyline Weather home">
+        <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><circle cx="12" cy="13" r="6" fill="var(--sun)"/><path d="M9 25h15a5 5 0 0 0 0-10 7 7 0 0 0-13.4 2.2A4 4 0 0 0 9 25z" fill="var(--cloud)"/></svg>
+        <span>Skyline</span>
+      </a>
+
+      <form class="search" id="search-form" role="search" autocomplete="off">
+        <label class="visually-hidden" for="search-input">Search for a city</label>
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="search-input" type="search" placeholder="Search a city…" aria-autocomplete="list" aria-controls="suggestions" aria-expanded="false">
+        <ul id="suggestions" class="suggestions" role="listbox" hidden></ul>
+      </form>
+
+      <div class="actions">
+        <button type="button" id="locate-btn" class="icon-btn" title="Use my location" aria-label="Use my location">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/></svg>
+        </button>
+        <div class="unit-toggle" role="group" aria-label="Temperature units">
+          <button type="button" data-unit="celsius" aria-pressed="true">°C</button>
+          <button type="button" data-unit="fahrenheit" aria-pressed="false">°F</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <nav class="saved" id="saved" aria-label="Saved places"></nav>
+
+    <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+
+    <section class="hero" id="hero" aria-labelledby="place-name">
+      <div class="hero-main">
+        <p class="eyebrow"><span id="local-time">—</span></p>
+        <h1 id="place-name">Loading…</h1>
+        <p class="place-sub" id="place-sub"></p>
+        <div class="now">
+          <div class="now-icon" id="now-icon" aria-hidden="true"></div>
+          <div>
+            <div class="now-temp"><span id="now-temp">--</span><span class="deg">°</span></div>
+            <p class="now-cond" id="now-cond">—</p>
+            <p class="now-range"><span id="now-hi">H --°</span> <span id="now-lo">L --°</span> · Feels like <span id="now-feels">--°</span></p>
+          </div>
+        </div>
+        <button type="button" id="save-btn" class="save-btn" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>
+          <span>Save place</span>
+        </button>
+      </div>
+
+      <dl class="metrics" id="metrics">
+        <div class="metric"><dt>Wind</dt><dd><span id="m-wind">--</span><small id="m-wind-dir"></small></dd></div>
+        <div class="metric"><dt>Gusts</dt><dd id="m-gust">--</dd></div>
+        <div class="metric"><dt>Humidity</dt><dd id="m-hum">--</dd></div>
+        <div class="metric"><dt>Dew point</dt><dd id="m-dew">--</dd></div>
+        <div class="metric"><dt>Pressure</dt><dd id="m-pres">--</dd></div>
+        <div class="metric"><dt>Visibility</dt><dd id="m-vis">--</dd></div>
+        <div class="metric"><dt>UV index</dt><dd><span id="m-uv">--</span><small id="m-uv-label"></small></dd></div>
+        <div class="metric"><dt>Precip. today</dt><dd id="m-precip">--</dd></div>
+        <div class="metric"><dt>Sunrise</dt><dd id="m-rise">--</dd></div>
+        <div class="metric"><dt>Sunset</dt><dd id="m-set">--</dd></div>
+      </dl>
+    </section>
+
+    <section class="panel" aria-labelledby="hourly-title">
+      <div class="panel-head">
+        <h2 id="hourly-title">Next 24 hours</h2>
+        <p class="legend"><span class="key key-temp"></span>Temperature <span class="key key-rain"></span>Chance of rain</p>
+      </div>
+      <div class="hourly-scroll" tabindex="0" aria-label="Hourly forecast, scrollable">
+        <div id="hourly" class="hourly"></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="daily-title">
+      <div class="panel-head">
+        <h2 id="daily-title">7-day forecast</h2>
+      </div>
+      <ol id="daily" class="daily"></ol>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <p>Forecast data from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0). Updated <span id="updated">—</span>.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
